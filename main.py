@@ -133,6 +133,7 @@ def settings():
     hard_text = font.render("Сложная", True, pygame.Color('white'))  # Текст кнопки
     back_text = font.render("Назад", True, pygame.Color('white'))  # Текст кнопки "Назад"
 
+    now_rect = now_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 135))  # Позиция
     easy_rect = easy_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки
     middle_rect = middle_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки
     hard_rect = hard_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки
@@ -140,6 +141,7 @@ def settings():
 
     while True:
         screen.blit(settings_image, (0, 0))  # Отрисовка фона меню
+        screen.blit(now_text, now_rect)  # Отрисовка кнопки
         screen.blit(easy_text, easy_rect)  # Отрисовка кнопки
         screen.blit(middle_text, middle_rect)  # Отрисовка кнопки
         screen.blit(hard_text, hard_rect)  # Отрисовка кнопки
@@ -149,12 +151,16 @@ def settings():
             if event.type == pygame.QUIT:  # Если событие - закрытие окна
                 terminate()  # Завершение программы
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Если нажата кнопка мыши
+                settings_dict = read_settings()  # Чтение настроек
                 if easy_rect.collidepoint(event.pos):  # Если нажата кнопка
-                    pass
+                    settings_dict['Сложность'] = 1  # Изменение сложности
+                    update_settings(settings_dict)  # Обновление её
                 elif middle_rect.collidepoint(event.pos):  # Если нажата кнопка
-                    pass
+                    settings_dict['Сложность'] = 2  # Изменение сложности
+                    update_settings(settings_dict)  # Обновление её
                 elif hard_rect.collidepoint(event.pos):  # Если нажата кнопка
-                    pass
+                    settings_dict['Сложность'] = 3  # Изменение сложности
+                    update_settings(settings_dict)  # Обновление её
                 elif back_rect.collidepoint(event.pos):  # Если нажата кнопка
                     return
 
@@ -485,7 +491,15 @@ while True:
 
         # Обновление волны
         current_time = pygame.time.get_ticks()  # Текущее время
-        if not wave.active and (current_time - level_start_time) >= 8000:  # Если прошло n секунд
+        Diff = read_settings()['Сложность']
+        time_for_live = 0
+        if Diff == 1:
+            time_for_live = 16000
+        elif Diff == 2:
+            time_for_live = 12000
+        elif Diff == 3:
+            time_for_live = 8000
+        if not wave.active and (current_time - level_start_time) >= time_for_live:  # Если прошло n секунд
             wave.activate()  # Активация волны
 
         if wave.active:  # Если волна активна
