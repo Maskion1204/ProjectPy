@@ -122,26 +122,33 @@ def start_screen():
 
 
 def settings():
-    settings_image = load_image('menu_background.png')  # Загрузка фона для экрана статистики
-    settings_func = read_settings()  # Чтение статистики
+    settings_image = load_image('settings_background.png')  # Загрузка фона для экрана настроек
 
     font = pygame.font.Font(None, 50)  # Шрифт для текста
-    now_text = font.render(f"Текущая сложность: {settings_func['Сложность']}", True, pygame.Color('white'))  #
-    # Текст кнопки
     easy_text = font.render("Простая", True, pygame.Color('white'))  # Текст кнопки
     middle_text = font.render("Средняя", True, pygame.Color('white'))  # Текст кнопки
     hard_text = font.render("Сложная", True, pygame.Color('white'))  # Текст кнопки
     back_text = font.render("Назад", True, pygame.Color('white'))  # Текст кнопки "Назад"
 
-    now_rect = now_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 135))  # Позиция
     easy_rect = easy_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки
     middle_rect = middle_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки
     hard_rect = hard_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки
     back_rect = back_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))  # Позиция кнопки "Назад"
 
     while True:
+        settings_func = read_settings()['Сложность']  # Чтение текущих настроек
+        now_diff = ''
+        if settings_func == 1:
+            now_diff = 'Простая'
+        elif settings_func == 2:
+            now_diff = 'Средняя'
+        elif settings_func == 3:
+            now_diff = 'Сложная'
+        now_text = font.render(f"Текущая сложность: {now_diff}", True, pygame.Color('white'))  # Обновление текста
+        now_rect = now_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 135))  # Позиция текста
+
         screen.blit(settings_image, (0, 0))  # Отрисовка фона меню
-        screen.blit(now_text, now_rect)  # Отрисовка кнопки
+        screen.blit(now_text, now_rect)  # Отрисовка текста текущей сложности
         screen.blit(easy_text, easy_rect)  # Отрисовка кнопки
         screen.blit(middle_text, middle_rect)  # Отрисовка кнопки
         screen.blit(hard_text, hard_rect)  # Отрисовка кнопки
@@ -152,17 +159,17 @@ def settings():
                 terminate()  # Завершение программы
             elif event.type == pygame.MOUSEBUTTONDOWN:  # Если нажата кнопка мыши
                 settings_dict = read_settings()  # Чтение настроек
-                if easy_rect.collidepoint(event.pos):  # Если нажата кнопка
+                if easy_rect.collidepoint(event.pos):  # Если нажата кнопка "Простая"
                     settings_dict['Сложность'] = 1  # Изменение сложности
-                    update_settings(settings_dict)  # Обновление её
-                elif middle_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    update_settings(settings_dict)  # Обновление настроек
+                elif middle_rect.collidepoint(event.pos):  # Если нажата кнопка "Средняя"
                     settings_dict['Сложность'] = 2  # Изменение сложности
-                    update_settings(settings_dict)  # Обновление её
-                elif hard_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    update_settings(settings_dict)  # Обновление настроек
+                elif hard_rect.collidepoint(event.pos):  # Если нажата кнопка "Сложная"
                     settings_dict['Сложность'] = 3  # Изменение сложности
-                    update_settings(settings_dict)  # Обновление её
-                elif back_rect.collidepoint(event.pos):  # Если нажата кнопка
-                    return
+                    update_settings(settings_dict)  # Обновление настроек
+                elif back_rect.collidepoint(event.pos):  # Если нажата кнопка "Назад"
+                    return  # Возврат в предыдущее меню
 
         pygame.display.flip()  # Обновление экрана
         clock.tick(FPS)  # Ограничение FPS
@@ -194,7 +201,7 @@ def update_settings(settings_dict):
 
 # Экран статистики
 def stats_screen():
-    stats_image = load_image('menu_background.png')  # Загрузка фона для экрана статистики
+    stats_image = load_image('stats_background.png')  # Загрузка фона для экрана статистики
     stats = read_stats()  # Чтение статистики
 
     font = pygame.font.Font(None, 50)  # Шрифт для текста
@@ -257,6 +264,7 @@ def update_stats(stats):
 def win():
     stats = read_stats()  # Чтение статистики
     stats['кол-во побед'] += 1  # Увеличение количества побед
+    stats['уровней пройдено'] += 1
     update_stats(stats)  # Обновление статистики
 
     gameover_image = load_image('win.png')  # Загрузка изображения победы
@@ -290,6 +298,7 @@ def win():
 def gameover():
     stats = read_stats()  # Чтение статистики
     stats['кол-во поражений'] += 1  # Увеличение количества поражений
+    stats['уровней пройдено'] += 1
     update_stats(stats)  # Обновление статистики
 
     gameover_image = load_image('gameover.png')  # Загрузка изображения поражения
