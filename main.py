@@ -123,7 +123,7 @@ def start_screen():
 
 # Экран статистики
 def stats_screen():
-    stats_image = load_image('menubackground.png')  # Загрузка фона для экрана статистики
+    stats_image = load_image('menu_background.png')  # Загрузка фона для экрана статистики
     stats = read_stats()  # Чтение статистики
 
     font = pygame.font.Font(None, 50)  # Шрифт для текста
@@ -317,16 +317,19 @@ def main_menu():
     font = pygame.font.Font(None, 50)  # Шрифт для текста
     play_text = font.render("Играть", True, pygame.Color('white'))  # Текст кнопки "Играть"
     stats_text = font.render("Статистика", True, pygame.Color('white'))  # Текст кнопки "Статистика"
+    settings_text = font.render("Настройки", True, pygame.Color('white'))  # Текст кнопки "Настройки"
     exit_text = font.render("Выход", True, pygame.Color('white'))  # Текст кнопки "Выход"
 
     play_rect = play_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки "Играть"
     stats_rect = stats_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки "Статистика"
-    exit_rect = exit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки "Выход"
+    settings_rect = settings_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки "Настройки"
+    exit_rect = exit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))  # Позиция кнопки "Выход"
 
     while True:
         screen.blit(menu_image, (0, 0))  # Отрисовка фона меню
         screen.blit(play_text, play_rect)  # Отрисовка кнопки "Играть"
         screen.blit(stats_text, stats_rect)  # Отрисовка кнопки "Статистика"
+        screen.blit(settings_text, settings_rect)  # Отрисовка кнопки "Статистика"
         screen.blit(exit_text, exit_rect)  # Отрисовка кнопки "Выход"
 
         for event in pygame.event.get():  # Обработка событий
