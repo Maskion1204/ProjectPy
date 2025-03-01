@@ -205,7 +205,8 @@ def stats_screen():
     font = pygame.font.Font(None, 50)  # Шрифт для текста
     levels_text = font.render(f"Уровней пройдено: {stats['уровней пройдено']}", True, pygame.Color('white'))  # Текст
     # статистики
-    time_text = font.render(f"Общее время: {stats['общее время']} сек", True, pygame.Color('white'))  # Текст времени
+    time_text = font.render(f"Времени в игре: {round(stats['времени в игре'] / 60, 2)} мин", True, pygame.Color('white'))  #
+    # Текст времени
     wins_text = font.render(f"Побед: {stats['кол-во побед']}", True, pygame.Color('white'))  # Текст побед
     losses_text = font.render(f"Поражений: {stats['кол-во поражений']}", True, pygame.Color('white'))  # Текст поражений
     back_text = font.render("Назад", True, pygame.Color('white'))  # Текст кнопки "Назад"
@@ -243,7 +244,7 @@ def read_stats():
     except FileNotFoundError:  # Если файл не найден
         stats = {  # Создание начальных значений
             'уровней пройдено': 0,
-            'общее время': 0,
+            'времени в игре': 0,
             'кол-во побед': 0,
             'кол-во поражений': 0,
         }
@@ -452,6 +453,8 @@ while True:
     running = True  # Флаг работы игрового цикла
     font = pygame.font.Font(None, 36)  # Шрифт для текста (можно изменить размер)
 
+    temp_time = 0
+
     while running:
         for event in pygame.event.get():  # Обработка событий
             if event.type == pygame.QUIT:  # Если событие - закрытие окна
@@ -496,6 +499,10 @@ while True:
                     count_level = 0
                 else:
                     count_level += 1
+                    stats = read_stats()  # Чтение статистики
+                    stats['времени в игре'] += temp_time  # Увеличение
+                    print(temp_time)
+                    update_stats(stats)  # Обновление статистики
                 running = False  # Завершение игрового цикла
 
         # Обновление волны
@@ -516,6 +523,10 @@ while True:
             if wave.check_collision(player.rect):  # Если волна столкнулась с игроком
                 gameover()  # Вызов экрана поражения
                 count_level = 0
+                stats = read_stats()  # Чтение статистики
+                stats['времени в игре'] += temp_time  # Увеличение
+                print(temp_time)
+                update_stats(stats)  # Обновление статистики
                 running = False  # Завершение игрового цикла
 
         # Отрисовка
@@ -534,6 +545,8 @@ while True:
         timer_text = font.render(f"Время: {minutes:02}:{seconds:02}", True,
                                  pygame.Color('white'))  # Форматирование времени
         screen.blit(timer_text, (10, 10))  # Отрисовка времени (координаты: x=10, y=50)
+
+        temp_time = seconds
 
         pygame.display.flip()  # Обновление экрана
         clock.tick(FPS)  # Ограничение FPS
