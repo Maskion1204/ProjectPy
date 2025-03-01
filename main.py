@@ -57,7 +57,7 @@ player_image = load_image('mario.png')  # Загрузка изображени�
 
 # Загрузка уровня
 def load_level(filename):
-    filepath = os.path.join('data', filename)  # Полный путь к файлу уровня
+    filepath = os.path.join('levels', filename)  # Полный путь к файлу уровня
     with open(filepath, 'r', encoding="utf-8") as file:  # Открытие файла на чтение
         level_map = [line.strip() for line in file]  # Чтение строк и удаление лишних пробелов
 
@@ -345,6 +345,8 @@ def main_menu():
 
 
 start_screen()  # Отображение стартового экрана
+levels = ['lvl 1.txt', 'lvl 2.txt', 'lvl 3.txt', 'lvl 4.txt', 'lvl 5.txt']
+count_level = 0
 
 # Основной цикл игры
 while True:
@@ -355,8 +357,8 @@ while True:
     tiles_group.empty()  # Очистка тайлов
     player_group.empty()  # Очистка игрока
 
-    player = generate_level(load_level("levels.txt"))  # Генерация уровня и создание игрока
-    level = load_level("levels.txt")  # Загрузка уровня
+    player = generate_level(load_level(levels[count_level]))  # Генерация уровня и создание игрока
+    level = load_level(levels[count_level])  # Загрузка уровня
     level_width = len(level[0]) * TILE_SIZE  # Ширина уровня в пикселях
     level_height = len(level) * TILE_SIZE  # Высота уровня в пикселях
     wave = Wave(level_width, level_height)  # Создание волны
@@ -404,17 +406,22 @@ while True:
         for tile in tiles_group:  # Проход по тайлам
             if isinstance(tile, ExitTile) and player.rect.colliderect(tile.rect):  # Если игрок на выходе
                 win()  # Вызов экрана победы
+                if count_level == 5:
+                    count_level = 0
+                else:
+                    count_level += 1
                 running = False  # Завершение игрового цикла
 
         # Обновление волны
         current_time = pygame.time.get_ticks()  # Текущее время
-        if not wave.active and (current_time - level_start_time) >= 5000:  # Если прошло 5 секунд
+        if not wave.active and (current_time - level_start_time) >= 8000:  # Если прошло n секунд
             wave.activate()  # Активация волны
 
         if wave.active:  # Если волна активна
             wave.update()  # Обновление позиции волны
             if wave.check_collision(player.rect):  # Если волна столкнулась с игроком
                 gameover()  # Вызов экрана поражения
+                count_level = 0
                 running = False  # Завершение игрового цикла
 
         # Отрисовка
