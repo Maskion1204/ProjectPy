@@ -189,7 +189,8 @@ def read_settings():
         update_settings(settings_dict)  # Обновление файла статистики
     return settings_dict  # Возврат статистики
 
-# Обнавление настроек
+
+# Обновление настроек
 def update_settings(settings_dict):
     settings_file = os.path.join('data', 'settings.txt')  # Путь к файлу настроек
     with open(settings_file, 'w', encoding='utf-8') as file:  # Открытие файла на запись
