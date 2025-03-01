@@ -121,13 +121,79 @@ def start_screen():
                 waiting = False  # Завершение ожидания
 
 
+def settings():
+    settings_image = load_image('menu_background.png')  # Загрузка фона для экрана статистики
+    settings_func = read_settings()  # Чтение статистики
+
+    font = pygame.font.Font(None, 50)  # Шрифт для текста
+    now_text = font.render(f"Текущая сложность: {settings_func['Сложность']}", True, pygame.Color('white'))  #
+    # Текст кнопки
+    easy_text = font.render("Простая", True, pygame.Color('white'))  # Текст кнопки
+    middle_text = font.render("Средняя", True, pygame.Color('white'))  # Текст кнопки
+    hard_text = font.render("Сложная", True, pygame.Color('white'))  # Текст кнопки
+    back_text = font.render("Назад", True, pygame.Color('white'))  # Текст кнопки "Назад"
+
+    easy_rect = easy_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки
+    middle_rect = middle_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки
+    hard_rect = hard_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки
+    back_rect = back_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))  # Позиция кнопки "Назад"
+
+    while True:
+        screen.blit(settings_image, (0, 0))  # Отрисовка фона меню
+        screen.blit(easy_text, easy_rect)  # Отрисовка кнопки
+        screen.blit(middle_text, middle_rect)  # Отрисовка кнопки
+        screen.blit(hard_text, hard_rect)  # Отрисовка кнопки
+        screen.blit(back_text, back_rect)  # Отрисовка кнопки
+
+        for event in pygame.event.get():  # Обработка событий
+            if event.type == pygame.QUIT:  # Если событие - закрытие окна
+                terminate()  # Завершение программы
+            elif event.type == pygame.MOUSEBUTTONDOWN:  # Если нажата кнопка мыши
+                if easy_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    pass
+                elif middle_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    pass
+                elif hard_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    pass
+                elif back_rect.collidepoint(event.pos):  # Если нажата кнопка
+                    return
+
+        pygame.display.flip()  # Обновление экрана
+        clock.tick(FPS)  # Ограничение FPS
+
+
+def read_settings():
+    settings_dict = {}  # Словарь для статистики
+    settings_file = os.path.join('data', 'settings.txt')  # Путь к файлу статистики
+    try:
+        with open(settings_file, 'r', encoding='utf-8') as file:  # Открытие файла на чтение
+            for line in file:  # Чтение строк
+                key, value = line.strip().split(' - ')  # Разделение строки на ключ и значение
+                settings_dict[key] = int(value)  # Добавление значения в словарь
+    except FileNotFoundError:  # Если файл не найден
+        settings_dict = {  # Создание начальных значений
+            'Сложность': 0
+        }
+
+        update_settings(settings_dict)  # Обновление файла статистики
+    return settings_dict  # Возврат статистики
+
+
+def update_settings(settings_dict):
+    settings_file = os.path.join('data', 'settings.txt')  # Путь к файлу настроек
+    with open(settings_file, 'w', encoding='utf-8') as file:  # Открытие файла на запись
+        for key, value in settings_dict.items():  # Проход по элементам словаря
+            file.write(f"{key} - {value}\n")  # Запись строки в файл
+
+
 # Экран статистики
 def stats_screen():
     stats_image = load_image('menu_background.png')  # Загрузка фона для экрана статистики
     stats = read_stats()  # Чтение статистики
 
     font = pygame.font.Font(None, 50)  # Шрифт для текста
-    levels_text = font.render(f"Уровней пройдено: {stats['уровней пройдено']}", True, pygame.Color('white'))  # Текст статистики
+    levels_text = font.render(f"Уровней пройдено: {stats['уровней пройдено']}", True, pygame.Color('white'))  # Текст
+    # статистики
     time_text = font.render(f"Общее время: {stats['общее время']} сек", True, pygame.Color('white'))  # Текст времени
     wins_text = font.render(f"Побед: {stats['кол-во побед']}", True, pygame.Color('white'))  # Текст побед
     losses_text = font.render(f"Поражений: {stats['кол-во поражений']}", True, pygame.Color('white'))  # Текст поражений
@@ -329,7 +395,7 @@ def main_menu():
         screen.blit(menu_image, (0, 0))  # Отрисовка фона меню
         screen.blit(play_text, play_rect)  # Отрисовка кнопки "Играть"
         screen.blit(stats_text, stats_rect)  # Отрисовка кнопки "Статистика"
-        screen.blit(settings_text, settings_rect)  # Отрисовка кнопки "Статистика"
+        screen.blit(settings_text, settings_rect)  # Отрисовка кнопки "Настройки"
         screen.blit(exit_text, exit_rect)  # Отрисовка кнопки "Выход"
 
         for event in pygame.event.get():  # Обработка событий
@@ -340,6 +406,8 @@ def main_menu():
                     return  # Возврат из меню
                 elif stats_rect.collidepoint(event.pos):  # Если нажата кнопка "Статистика"
                     stats_screen()  # Переход на экран статистики
+                elif settings_rect.collidepoint(event.pos):  # Если нажата кнопка "Настройки"
+                    settings()  # Переход на экран настроек
                 elif exit_rect.collidepoint(event.pos):  # Если нажата кнопка "Выход"
                     terminate()  # Завершение программы
 
