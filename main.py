@@ -95,8 +95,6 @@ def generate_level(level):
                 Tile('empty', x, y)
             elif level[y][x] == '#':  # Если символ '#', создаем стену
                 Tile('wall', x, y)
-            elif level[y][x] == 'N':  # Если символ 'N', создаем пустоту
-                Tile('missing', x, y)
             elif level[y][x] == '@':  # Если символ '@', создаем игрока
                 Tile('empty', x, y)  # Сначала создаем пол под игроком
                 new_player = Player(x, y)  # Затем создаем игрока
@@ -452,6 +450,8 @@ while True:
     camera = Camera(WIDTH, HEIGHT)  # Создание камеры
 
     running = True  # Флаг работы игрового цикла
+    font = pygame.font.Font(None, 36)  # Шрифт для текста (можно изменить размер)
+
     while running:
         for event in pygame.event.get():  # Обработка событий
             if event.type == pygame.QUIT:  # Если событие - закрытие окна
@@ -525,8 +525,18 @@ while True:
             screen.blit(tile.image, camera.apply(tile))
         wave.draw(screen, camera)  # Отрисовка волны
         screen.blit(player.image, camera.apply(player))  # Отрисовка игрока
+
+        # Секундомер
+        elapsed_time = current_time - level_start_time  # Прошедшее время в миллисекундах
+        seconds = elapsed_time // 1000  # Преобразование в секунды
+        minutes = seconds // 60  # Преобразование в минуты
+        seconds %= 60  # Оставшиеся секунды
+        timer_text = font.render(f"Время: {minutes:02}:{seconds:02}", True,
+                                 pygame.Color('white'))  # Форматирование времени
+        screen.blit(timer_text, (10, 10))  # Отрисовка времени (координаты: x=10, y=50)
+
         pygame.display.flip()  # Обновление экрана
         clock.tick(FPS)  # Ограничение FPS
 
-terminate()
 # Завершение программы
+terminate()
