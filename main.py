@@ -32,7 +32,7 @@ def load_image(name, color_key=None):
     fullname = os.path.join('data', name)  # Полный путь к файлу изображения
     try:
         image = pygame.image.load(fullname)  # Загрузка изображения
-    except:
+    except FileNotFoundError:
         image = pygame.image.load(os.path.join('data', 'missing.png'))  # Загрузка альтернативного изображения
 
     if color_key is not None:  # Если указан ключ цвета для прозрачности
@@ -106,8 +106,8 @@ def generate_level(level):
 
 # Заставка
 def start_screen():
-    splash_image = load_image('background.png')  # Загрузка изображения для заставки
-    screen.blit(splash_image, (0, 0))  # Отображение изображения на весь экран
+    background_image = load_image('background.png')  # Загрузка изображения для заставки
+    screen.blit(background_image, (0, 0))  # Отображение изображения на весь экран
     pygame.display.flip()  # Обновление экрана
 
     waiting = True  # Флаг ожидания
