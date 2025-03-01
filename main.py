@@ -204,9 +204,10 @@ def stats_screen():
     stats = read_stats()  # Чтение статистики
 
     font = pygame.font.Font(None, 50)  # Шрифт для текста
-    levels_text = font.render(f"Уровней пройдено: {stats['уровней пройдено']}", True, pygame.Color('white'))  # Текст
+    levels_text = font.render(f"Уровней сыграно: {stats['уровней сыграно']}", True, pygame.Color('white'))  # Текст
     # статистики
-    time_text = font.render(f"Времени в игре: {round(stats['времени в игре'] / 60, 2)} мин", True, pygame.Color('white'))  #
+    time_text = font.render(f"Времени в игре: {round(stats['времени в игре'] / 60, 2)} мин", True,
+                            pygame.Color('white'))  #
     # Текст времени
     wins_text = font.render(f"Побед: {stats['кол-во побед']}", True, pygame.Color('white'))  # Текст побед
     losses_text = font.render(f"Поражений: {stats['кол-во поражений']}", True, pygame.Color('white'))  # Текст поражений
@@ -244,7 +245,7 @@ def read_stats():
                 stats[key] = int(value)  # Добавление значения в словарь
     except FileNotFoundError:  # Если файл не найден
         stats = {  # Создание начальных значений
-            'уровней пройдено': 0,
+            'уровней сыграно': 0,
             'времени в игре': 0,
             'кол-во побед': 0,
             'кол-во поражений': 0,
@@ -262,10 +263,10 @@ def update_stats(stats):
 
 
 def win():
-    stats = read_stats()  # Чтение статистики
-    stats['кол-во побед'] += 1  # Увеличение количества побед
-    stats['уровней пройдено'] += 1
-    update_stats(stats)  # Обновление статистики
+    stats_r = read_stats()  # Чтение статистики
+    stats_r['кол-во побед'] += 1  # Увеличение количества побед
+    stats_r['уровней сыграно'] += 1
+    update_stats(stats_r)  # Обновление статистики
 
     gameover_image = load_image('win.png')  # Загрузка изображения победы
     screen.blit(gameover_image, (0, 0))  # Отображение изображения на экране
@@ -296,10 +297,10 @@ def win():
 
 
 def gameover():
-    stats = read_stats()  # Чтение статистики
-    stats['кол-во поражений'] += 1  # Увеличение количества поражений
-    stats['уровней пройдено'] += 1
-    update_stats(stats)  # Обновление статистики
+    stats_r = read_stats()  # Чтение статистики
+    stats_r['кол-во поражений'] += 1  # Увеличение количества поражений
+    stats_r['уровней сыграно'] += 1
+    update_stats(stats_r)  # Обновление статистики
 
     gameover_image = load_image('gameover.png')  # Загрузка изображения поражения
     screen.blit(gameover_image, (0, 0))  # Отображение изображения на экране
@@ -465,10 +466,10 @@ while True:
         old_x, old_y = player.rect.x, player.rect.y  # Текущая позиция игрока
         dx, dy = 0, 0  # Смещение игрока
 
-        if keys[pygame.K_a]: dx -= STEP  # Движение влево
-        if keys[pygame.K_d]: dx += STEP  # Движение вправо
-        if keys[pygame.K_w]: dy -= STEP  # Движение вверх
-        if keys[pygame.K_s]: dy += STEP  # Движение вниз
+        dx -= keys[pygame.K_a]  # Движение влево
+        dx += keys[pygame.K_d]  # Движение вправо
+        dy -= keys[pygame.K_w]  # Движение вверх
+        dy += keys[pygame.K_s]  # Движение вниз
 
         if dx != 0 or dy != 0:  # Если игрок движется
             length = (dx ** 2 + dy ** 2) ** 0.5  # Длина вектора движения
@@ -482,15 +483,19 @@ while True:
         temp_rect_x = player.rect.move(dx, 0)  # Временный прямоугольник для проверки по X
         temp_rect_y = player.rect.move(0, dy)  # Временный прямоугольник для проверки по Y
 
-        collided_x = any(  # Проверка столкновений по X
-            tile.image == tile_images['wall'] and temp_rect_x.colliderect(tile.rect) for tile in tiles_group
+        collision_x = any(
+            t.image == tile_images['wall'] and temp_rect_x.colliderect(t.rect)
+            for t in tiles_group
         )
-        collided_y = any(  # Проверка столкновений по Y
-            tile.image == tile_images['wall'] and temp_rect_y.colliderect(tile.rect) for tile in tiles_group
+        collision_y = any(
+            t.image == tile_images['wall'] and temp_rect_y.colliderect(t.rect)
+            for t in tiles_group
         )
 
-        if not collided_x: player.rect.x = new_x  # Если нет столкновения по X, обновляем позицию
-        if not collided_y: player.rect.y = new_y  # Если нет столкновения по Y, обновляем позицию
+        if not collision_x:  # Если нет столкновения по X, обновляем позицию
+            player.rect.x = new_x
+        if not collision_y:  # Если нет столкновения по Y, обновляем позицию
+            player.rect.y = new_y
 
         # Проверка выхода
         for tile in tiles_group:  # Проход по тайлам
