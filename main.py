@@ -130,9 +130,9 @@ def settings():
     hard_text = font.render("Сложная", True, pygame.Color('white'))  # Текст кнопки
     back_text = font.render("Назад", True, pygame.Color('white'))  # Текст кнопки "Назад"
 
-    easy_rect = easy_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки
+    easy_rect = easy_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))  # Позиция кнопки
     middle_rect = middle_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки
-    hard_rect = hard_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки
+    hard_rect = hard_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))  # Позиция кнопки
     back_rect = back_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))  # Позиция кнопки "Назад"
 
     while True:
@@ -145,7 +145,7 @@ def settings():
         elif settings_func == 3:
             now_diff = 'Сложная'
         now_text = font.render(f"Текущая сложность: {now_diff}", True, pygame.Color('white'))  # Обновление текста
-        now_rect = now_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 135))  # Позиция текста
+        now_rect = now_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 125))  # Позиция текста
 
         screen.blit(settings_image, (0, 0))  # Отрисовка фона меню
         screen.blit(now_text, now_rect)  # Отрисовка текста текущей сложности
@@ -216,10 +216,10 @@ def stats_screen():
 
     while True:
         screen.blit(stats_image, (0, 0))  # Отрисовка фона
-        screen.blit(levels_text, (WIDTH // 2 - levels_text.get_width() // 2, HEIGHT // 2 - 150))  # Отрисовка текста
-        screen.blit(time_text, (WIDTH // 2 - time_text.get_width() // 2, HEIGHT // 2 - 100))  # Отрисовка текста
-        screen.blit(wins_text, (WIDTH // 2 - wins_text.get_width() // 2, HEIGHT // 2 - 50))  # Отрисовка текста
-        screen.blit(losses_text, (WIDTH // 2 - losses_text.get_width() // 2, HEIGHT // 2))  # Отрисовка текста
+        screen.blit(levels_text, (WIDTH // 2 - levels_text.get_width() // 2, HEIGHT // 2 - 100))  # Отрисовка текста
+        screen.blit(time_text, (WIDTH // 2 - time_text.get_width() // 2, HEIGHT // 2 - 50))  # Отрисовка текста
+        screen.blit(wins_text, (WIDTH // 2 - wins_text.get_width() // 2, HEIGHT // 2))  # Отрисовка текста
+        screen.blit(losses_text, (WIDTH // 2 - losses_text.get_width() // 2, HEIGHT // 2 + 50))  # Отрисовка текста
         screen.blit(back_text, back_rect)  # Отрисовка кнопки "Назад"
 
         for event in pygame.event.get():  # Обработка событий
@@ -401,10 +401,10 @@ def main_menu():
     settings_text = font.render("Настройки", True, pygame.Color('white'))  # Текст кнопки "Настройки"
     exit_text = font.render("Выход", True, pygame.Color('white'))  # Текст кнопки "Выход"
 
-    play_rect = play_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 100))  # Позиция кнопки "Играть"
+    play_rect = play_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))  # Позиция кнопки "Играть"
     stats_rect = stats_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))  # Позиция кнопки "Статистика"
-    settings_rect = settings_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))  # Позиция кнопки "Настройки"
-    exit_rect = exit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 200))  # Позиция кнопки "Выход"
+    settings_rect = settings_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))  # Позиция кнопки "Настройки"
+    exit_rect = exit_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50 * 2))  # Позиция кнопки "Выход"
 
     while True:
         screen.blit(menu_image, (0, 0))  # Отрисовка фона меню
